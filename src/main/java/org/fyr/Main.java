@@ -40,7 +40,8 @@ public class Main {
             double amount = scan.nextDouble();
 
             if (amount <= 0) {
-                throw new IllegalArgumentException("Please enter valid amount");
+                System.out.println("Please enter valid amount\n");
+                continue;
             }
 
             switch (choice) {
