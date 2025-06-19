@@ -3,15 +3,14 @@ package org.fyr;
 import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
-    private static final DecimalFormat df = new DecimalFormat("0.00");
+
     private static Converter converter = new Converter();
 
 
-    public static void main(String[] args) throws InputMismatchException{
+    public static void main(String[] args) {
 
         Scanner scan = new Scanner(System.in);
 
@@ -20,45 +19,48 @@ public class Main {
         Currency sek = new Currency("SEK", 11.055313);
 
 
-        while(true){
+        while (true) {
             printMenu();
 
             int choice = scan.nextInt();
 
 
-            if(choice < 0 || choice > 6){
+            if (choice < 0 || choice > 6) {
                 System.out.println("Enter a number from 0 --> 6 according to the options available in the menu");
                 continue;
             }
 
-            if(choice == 0) {
+            if (choice == 0) {
                 System.out.println("Exiting the program.");
                 break;
             }
 
             System.out.println("Please enter the amount that you would like to convert");
+
             double amount = scan.nextDouble();
 
+            if (amount <= 0) {
+                throw new IllegalArgumentException("Please enter valid amount");
+            }
 
-
-            switch (choice){
+            switch (choice) {
                 case 1:
-                    convertUsdToSek(amount,usd, sek);
+                    convert(amount, usd, sek);
                     break;
                 case 2:
-                    convertSekToUsd(amount, sek, usd);
+                    convert(amount, sek, usd);
                     break;
                 case 3:
-                    convertUsdToEur(amount, usd, eur);
+                    convert(amount, usd, eur);
                     break;
                 case 4:
-                    convertEurToUsd(amount, eur, usd);
+                    convert(amount, eur, usd);
                     break;
                 case 5:
-                    convertEurToSek(amount, eur, sek);
+                    convert(amount, eur, sek);
                     break;
                 case 6:
-                    convertSekToEur(amount, sek, eur);
+                    convert(amount, sek, eur);
                     break;
             }
 
@@ -86,43 +88,17 @@ public class Main {
 
         LocalDateTime ldt = LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES);
 
-        String formattedString = String.format("%s %.2f is %s %.2f",fromCurrency.getCurrency().toUpperCase(), amount, convertedCurrency.getCurrency().toUpperCase(), result );
+        String formattedString = String.format("\n%s %.2f is %s %.2f", fromCurrency.getCurrency().toUpperCase(), amount, convertedCurrency.getCurrency().toUpperCase(), result);
         System.out.println(formattedString);
-        System.out.println("Conversion occurred at " + ldt.toLocalDate() + " " +ldt.toLocalTime());
-        System.out.println("---------------");
+        System.out.println("Conversion occurred on " + ldt.toLocalDate() + " " + ldt.toLocalTime());
+        System.out.println("---------------\n");
     }
 
 
-    private static void convertUsdToSek(double amount, Currency usd, Currency sek) {
-        double result = converter.convert(amount, sek.getRate());
+    private static void convert(double amount, Currency fromCurr, Currency toCurr) {
+        double result = converter.convert(amount, toCurr.getRate());
 
-        printResult(amount, result, usd, sek);
+        printResult(amount, result, fromCurr, toCurr);
     }
-
-    private static void convertSekToUsd(double amount, Currency sek, Currency usd) {
-        double result = converter.convert(amount, usd.getRate());
-
-        printResult(amount, result, sek, usd);
-    }
-    private static void convertUsdToEur(double amount, Currency usd, Currency eur) {
-        double result = converter.convert(amount, eur.getRate());
-        printResult(amount, result, usd, eur);
-
-    }
-
-    private static void convertEurToUsd(double amount, Currency eur, Currency usd) {
-        double result = converter.convert(amount, usd.getRate());
-        printResult(amount, result, eur, usd);
-    }
-    private static void convertEurToSek(double amount, Currency eur, Currency sek) {
-        double result = converter.convert(amount, sek.getRate());
-        printResult(amount, result, eur, sek);
-    }
-    private static void convertSekToEur(double amount, Currency sek, Currency eur) {
-        double result = converter.convert(amount, eur.getRate());
-        printResult(amount, result, sek, eur);
-    }
-
-
 
 }

@@ -2,7 +2,6 @@ package org.fyr;
 
 public class Converter {
 
-
     public Converter(){
 
     }
